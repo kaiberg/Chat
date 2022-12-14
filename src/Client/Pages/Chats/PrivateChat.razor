@@ -1,0 +1,19 @@
+﻿@using chat.Shared;
+
+<div>
+    if(PrivateChats == null)
+    {
+    <p>Loading...</p>
+    }
+    else
+    {
+    @foreach (var c in Messages)
+    {
+        <p><strong> @c.Sender.UserName @c.Created.ToShortDateString()</strong>: @c.Content</p>
+    }
+    }
+</div>
+@code {
+    [Parameter]
+    public List<PrivateMessage> Messages { get; set; } = new();
+}

@@ -1,0 +1,71 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using chat.Shared;
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider GetAuthenticationStateAsync
+@implements IAsyncDisposable
+
+<PageTitle>Global Chat</PageTitle>
+
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var m in channel.Messages)
+    {
+            <p><strong> @m.Sender.UserName @m.Created.ToShortDateString()</strong>: @m.Content</p>
+    }
+</ul>
+
+@code {
+    private HubConnection? hubConnection;
+    private Channel channel;
+    private string? userInput;
+    private string? messageInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/channel"))
+            .Build();
+
+        hubConnection.On<string, string, DateTime>("PublicMessage", (user, message, date) =>
+        {
+            var msg = new Message() { Content = message, SenderId = user, Created = date };
+            channel.Messages.Add(msg);
+            StateHasChanged();
+        });
+
+        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
+        var user = authstate.User;
+        userInput = user.Identity.Name;
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

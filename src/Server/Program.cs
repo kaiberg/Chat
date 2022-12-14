@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using chat.Server.Data;
-using chat.Server.Models;
+using chat.Shared;
+using chat.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,16 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(opts =>
+{
+    opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
+
 var app = builder.Build();
+
+app.UseResponseCompression();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -53,6 +63,9 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<ChannelHub>("/channel");
+app.MapHub<GroupHub>("/groups");
+app.MapHub<PrivateMessageHub>("/messages");
 app.MapFallbackToFile("index.html");
 
 app.Run();

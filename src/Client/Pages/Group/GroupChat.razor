@@ -1,5 +1,19 @@
 ﻿<h3>GroupChat</h3>
 
-@code {
+<div>
+    if(PrivateChats == null)
+    {
+   <p>Loading...</p>
+    }
+    else
+    {
+    @foreach (var m in Group.Messages)
+    {
+            <p><strong> @m.Sender.UserName @m.Created.ToShortDateString()</strong>: @m.Content</p>
+    }
+    }
+</div>
 
+@code {
+    public chat.Shared.Group Group { get; set; }
 }
