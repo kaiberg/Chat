@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat.Server", "Server\chat.Server.csproj", "{EE2C66C6-9CE8-45F1-ACE4-3F1919A5079B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat.Client", "Client\chat.Client.csproj", "{7B618526-C16B-4B9C-8DB7-25E67F60C3B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chat.Shared", "Shared\chat.Shared.csproj", "{FB19CAAA-06B9-4D06-ABBB-B1955F1E933A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE2C66C6-9CE8-45F1-ACE4-3F1919A5079B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE2C66C6-9CE8-45F1-ACE4-3F1919A5079B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE2C66C6-9CE8-45F1-ACE4-3F1919A5079B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE2C66C6-9CE8-45F1-ACE4-3F1919A5079B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B618526-C16B-4B9C-8DB7-25E67F60C3B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B618526-C16B-4B9C-8DB7-25E67F60C3B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B618526-C16B-4B9C-8DB7-25E67F60C3B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B618526-C16B-4B9C-8DB7-25E67F60C3B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB19CAAA-06B9-4D06-ABBB-B1955F1E933A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB19CAAA-06B9-4D06-ABBB-B1955F1E933A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB19CAAA-06B9-4D06-ABBB-B1955F1E933A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB19CAAA-06B9-4D06-ABBB-B1955F1E933A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8FF5FC90-63C3-47AF-9923-1B796BDAB871}
+	EndGlobalSection
+EndGlobal

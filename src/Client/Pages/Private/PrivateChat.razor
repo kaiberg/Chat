@@ -1,0 +1,17 @@
+﻿<h3>PrivateChat</h3>
+
+if(PrivateChats == null)
+{
+<p>Loading...</p>
+}
+else
+{
+@foreach (var c in PrivateChats)
+{
+    <button>@c.User1.UserName @c.User2.UserName </button>
+}
+}
+
+@code {
+    List<chat.Shared.PrivateChat> PrivateChats;
+}
