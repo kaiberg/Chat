@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using chat.Server.Data;
 using chat.Shared;
 using chat.Server.Hubs;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 

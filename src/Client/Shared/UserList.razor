@@ -1,7 +1,20 @@
-﻿<div>
-    @*users*@
+﻿@using chat.Shared;
+@page "/users"
+<div>
+    <p>Search: <input @bind="Filter" /></p>
+    @if(Users is not null)
+    {
+        @foreach(var u in Users)
+        {
+            <button @onclick="() => UserSelected.InvokeAsync(u)">
+                @u.UserName
+            </button>
+        }
+    }
 </div>
 
 @code {
-
+    string Filter { get; set; } = string.Empty;
+    List<ApplicationUser> Users { get; set; }
+    EventCallback<ApplicationUser> UserSelected { get; set; }
 }

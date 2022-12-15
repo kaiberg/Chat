@@ -3,35 +3,51 @@
 @using chat.Shared;
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
+@inject HttpClient http
 @implements IAsyncDisposable
 
 <PageTitle>Global Chat</PageTitle>
+@if (channel != null)
+{
+    <div>
+        <p>@channel.Name</p>
+        <p>@channel.Description</p>
+        <p>@channel.Crea</p>
+    </div>
 
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
-<hr>
+    <hr>
 
-<ul id="messagesList">
-    @foreach (var m in channel.Messages)
-    {
-            <p><strong> @m.Sender.UserName @m.Created.ToShortDateString()</strong>: @m.Content</p>
-    }
-</ul>
+
+    <ul id="messagesList">
+        @foreach (var m in channel.Messages)
+        {
+            <p><strong> @m.SenderId @m.Created.ToShortDateString()</strong>: @m.Content</p>
+        }
+    </ul>
+
+}
+else
+{
+    <p>loading</p>
+}
 
 @code {
     private HubConnection? hubConnection;
     private Channel channel;
-    private string? userInput;
-    private string? messageInput;
+    private string? userInput = String.Empty;
+    private string? messageInput = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
+        channel = await http.GetFromJsonAsync<Channel>("api/channel");
         hubConnection = new HubConnectionBuilder()
             .WithUrl(Navigation.ToAbsoluteUri("/channel"))
             .Build();
@@ -39,14 +55,14 @@
         hubConnection.On<string, string, DateTime>("PublicMessage", (user, message, date) =>
         {
             var msg = new Message() { Content = message, SenderId = user, Created = date };
-            channel.Messages.Add(msg);
+            if (channel.Messages != null)
+                channel.Messages.Add(msg);
             StateHasChanged();
         });
 
-        var authstate = await GetAuthenticationStateAsync.GetAuthenticationStateAsync();
-        var user = authstate.User;
-        userInput = user.Identity.Name;
 
+        var user = (await GetAuthenticationStateAsync.GetAuthenticationStateAsync()).User;
+        userInput = user.FindFirst(u => u.Type.Contains("sub"))?.Value;
         await hubConnection.StartAsync();
     }
 
