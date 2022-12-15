@@ -4,8 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using chat.Server.Data;
 
-namespace chat.Shared
+namespace chat.Server.Models
 {
     public class Channel
     {
