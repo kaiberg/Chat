@@ -1,0 +1,60 @@
+﻿@using chat.Shared.Dto;
+
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-body" style="max-height:65vh;overflow-y: auto;">
+                <div class="col-md-6 col-lg-7 col-xl-8">
+                    @foreach (var m in Messages)
+                    {
+                        <div>
+                            <span>@m.Sender.UserName</span>
+                            <span class="small mb-1 text-muted">@m.Created</span>
+                        </div>
+                        <div class="d-flex flex-row justify-content-start">
+
+                            <img src="@m.Sender.ImageUrl"
+                             style="width: 45px; height: 100%; border-radius: 50%;">
+                            <div>
+                                <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #f5f6f7;">
+                                    @m.Content
+                                </p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <form @onsubmit="() => OnSend.InvokeAsync()">
+                <input type="text" class="form-control form-control-lg"
+                       placeholder="Type message" @oninput="OnMessageChanged" disabled="@(!IsConnected)">
+            </form>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public List<MessageDto> Messages { get; set; }
+    [Parameter]
+    public bool IsConnected { get; set; }
+    [Parameter]
+    public string Message { get; set; }
+    [Parameter]
+    public EventCallback<string> MessageChanged { get; set; }
+    [Parameter]
+    public EventCallback OnSend { get; set; }
+
+    private Task OnMessageChanged(ChangeEventArgs e)
+    {
+        var msg = e?.Value?.ToString();
+
+        if (msg == null)
+            return Task.CompletedTask;
+
+        return MessageChanged.InvokeAsync(msg);
+    }
+}

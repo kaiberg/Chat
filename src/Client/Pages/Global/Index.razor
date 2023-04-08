@@ -1,38 +1,27 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 @using Microsoft.AspNetCore.SignalR.Client
 @using chat.Shared;
+@using chat.Shared.Dto;
 @inject NavigationManager Navigation
 @inject AuthenticationStateProvider GetAuthenticationStateAsync
 @inject HttpClient http
+@inject IAccessTokenProvider tokenProvider
 @implements IAsyncDisposable
 
 <PageTitle>Global Chat</PageTitle>
 @if (channel != null)
 {
-    <div>
-        <p>@channel.Name</p>
-        <p>@channel.Description</p>
-        <p>@channel.Crea</p>
+    <div class="card">
+        <div class="card-header">
+            @channel.Name @channel.Created
+        </div>
+        <div class="card-body">
+            <h5 class="card-text">@channel.Description</h5>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label>
-            Message:
-            <input @bind="messageInput" size="50" />
-        </label>
-    </div>
-    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
-
-    <hr>
-
-
-    <ul id="messagesList">
-        @foreach (var m in channel.Messages)
-        {
-            <p><strong> @m.SenderId @m.Created.ToShortDateString()</strong>: @m.Content</p>
-        }
-    </ul>
-
+    <ChatLog Messages=@channel.Messages OnSend=Send IsConnected=IsConnected @bind-Message="messageInput"/>
 }
 else
 {
@@ -41,22 +30,26 @@ else
 
 @code {
     private HubConnection? hubConnection;
-    private Channel channel;
+    private ChannelDto channel;
     private string? userInput = String.Empty;
     private string? messageInput = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        channel = await http.GetFromJsonAsync<Channel>("api/channel");
+        channel = await http.GetFromJsonAsync<ChannelDto>("api/channel");
+        var tokenRequest = await tokenProvider.RequestAccessToken();
+        tokenRequest.TryGetToken(out var token);
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/channel"))
+            .WithUrl(Navigation.ToAbsoluteUri("/channel"), options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(token.Value);
+            })
             .Build();
 
-        hubConnection.On<string, string, DateTime>("PublicMessage", (user, message, date) =>
+        hubConnection.On<MessageDto>("PublicMessage", (message) =>
         {
-            var msg = new Message() { Content = message, SenderId = user, Created = date };
             if (channel.Messages != null)
-                channel.Messages.Add(msg);
+                channel.Messages.Add(message);
             StateHasChanged();
         });
 
@@ -70,7 +63,7 @@ else
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("SendMessage", userInput, messageInput);
+            await hubConnection.SendAsync("SendMessage", messageInput);
         }
     }
 

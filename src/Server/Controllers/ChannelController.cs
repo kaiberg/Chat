@@ -1,5 +1,8 @@
-﻿using chat.Server.Data;
+﻿using AutoMapper;
+using chat.Server.Data;
+using chat.Server.Models;
 using chat.Shared;
+using chat.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,22 +15,18 @@ namespace chat.Server.Controllers
     public class ChannelController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public ChannelController(ApplicationDbContext context)
+        private readonly IMapper _mapper;
+        public ChannelController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         // GET: api/<ValuesController>
         [HttpGet]
-        public ActionResult<Channel> Get()
+        public ActionResult<ChannelDto> Get()
         {
-            return Ok(_context.Channels.Include(c => c.Messages).First());
-        }
-
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
+            var channel = _context.Channels.Include(c => c.Messages).ThenInclude(m => m.Sender).First(); 
+            return Ok(_mapper.Map<ChannelDto>(channel));
         }
     }
 }

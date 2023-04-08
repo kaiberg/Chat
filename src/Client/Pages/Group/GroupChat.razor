@@ -1,4 +1,5 @@
-﻿<h3>GroupChat</h3>
+﻿@using chat.Shared.Dto;
+<h3>GroupChat</h3>
 
 <div>
     if(PrivateChats == null)
@@ -15,5 +16,5 @@
 </div>
 
 @code {
-    public chat.Shared.Group Group { get; set; }
+    public GroupDto Group { get; set; }
 }

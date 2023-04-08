@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using chat.Server.Data;
 
-namespace chat.Shared
+namespace chat.Server.Models
 {
     public class Group
     {

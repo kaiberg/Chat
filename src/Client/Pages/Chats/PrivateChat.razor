@@ -1,4 +1,5 @@
 ﻿@using chat.Shared;
+@using chat.Shared.Dto;
 
 <div>
     if(PrivateChats == null)
@@ -15,5 +16,5 @@
 </div>
 @code {
     [Parameter]
-    public List<PrivateMessage> Messages { get; set; } = new();
+    public List<PrivateMessageDto> Messages { get; set; } = new();
 }

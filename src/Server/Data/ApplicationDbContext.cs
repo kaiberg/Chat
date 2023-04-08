@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography.X509Certificates;
 using chat.Shared;
+using chat.Server.Models;
 
 namespace chat.Server.Data
 {
